@@ -5,7 +5,7 @@ using UnityEngine;
 public class PhysicsObjects : MonoBehaviour {                                                      
                                                                                                    
                                                                                                    
-    [SerializeField] private float gravityModifier = 1f;                                           // Modificador para acessar variavel somente pela interface da Unity!
+    [SerializeField] private float gravityModifier = 3f;                                           // Modificador para acessar variavel somente pela interface da Unity!
     [SerializeField] private float minGroundNormalY = .65f;                                        
                                                                                                    
     // Protected pode ser acessado apenas pelos herdeiros dessa classe                             
