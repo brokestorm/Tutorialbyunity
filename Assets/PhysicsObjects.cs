@@ -108,6 +108,17 @@ public class PhysicsObjects : MonoBehaviour {
         rb2d.position = rb2d.position = rb2d.position + move.normalized * distance;                // Altera a posição do objeto
             
         
-    }                                                                               
+    }
+    
+    public void SetNoGravity()
+    {
+        gravityModifier = 0f;
+    }
+
+    public void ResetGravity()
+    {
+        gravityModifier = 3f;
+    }
+
 }                                                                                          
                                                                                            
