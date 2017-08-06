@@ -10,13 +10,12 @@ public class Player2Controller : PhysicsObjects
 
     SpriteRenderer spriteRenderer;
     Animator anim;
-    LadderController ladderController;
-    private bool IsOnLadder;
+    public bool IsOnLadder = false;
 
 	void Awake () {
         spriteRenderer = GetComponent<SpriteRenderer> ();
         anim = GetComponent<Animator> ();
-        ladderController = new LadderController();
+        
 	}
 
     protected override void ComputeVelocity()
@@ -25,15 +24,19 @@ public class Player2Controller : PhysicsObjects
 
         move.x = Input.GetAxis("Horizontal");
 
-        if (ladderController.OnLadder == true)
+
+        if (IsOnLadder)
         {
-           
-           IsOnLadder = true;
-           anim.SetBool("OnLadder", true);
-           velocity.y = Input.GetAxis("Vertical") * MaxSpeed;
+            anim.SetBool("OnLadder", true);
+            velocity.y = Input.GetAxis("Vertical") * MaxSpeed;
+            SetNoGravity();
         }
-
-
+        else
+        {
+            anim.SetBool("OnLadder", false);
+            ResetGravity();
+        }
+            
 
         if (Input.GetButtonDown("Jump") && grounded)
         {
@@ -55,7 +58,6 @@ public class Player2Controller : PhysicsObjects
         }
 
         anim.SetBool("grounded", grounded);
-        IsOnLadder = false;
         anim.SetFloat("Run", Mathf.Abs(velocity.x) / MaxSpeed);
         anim.SetFloat("velocity.y", velocity.y / JumpTakeOffSpeed);
         targetVelocity = move * MaxSpeed;

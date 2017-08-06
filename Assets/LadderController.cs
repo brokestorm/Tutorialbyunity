@@ -2,29 +2,30 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LadderController : PhysicsObjects {
+public class LadderController : MonoBehaviour
+{
 
-    CompositeCollider2D ladder;
-    public bool OnLadder;
-
-    // Use this for initialization
-    void Start () {
-        ladder = GetComponent<CompositeCollider2D>();
-        
-        OnLadder = false;
-    }
-	
-	// Update is called once per frame
-	void FixedUpdate () {
-        if (ladder.isTrigger == true)
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.name == "Player")
         {
-            OnLadder = true;
-            
+            collision.GetComponent<Player2Controller>().IsOnLadder = true;
         }
-        else
+    }
+
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (collision.gameObject.name == "Player")
         {
-            OnLadder = false;
-            
+            collision.GetComponent<Player2Controller>().IsOnLadder = true;
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.gameObject.name == "Player")
+        {
+            collision.GetComponent<Player2Controller>().IsOnLadder = false;
         }
     }
 }
