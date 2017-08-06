@@ -25,12 +25,12 @@ public class Player2Controller : PhysicsObjects
 
         move.x = Input.GetAxis("Horizontal");
 
-        if (ladderController.OnLadder)
+        if (ladderController.OnLadder == true)
         {
            
            IsOnLadder = true;
            anim.SetBool("OnLadder", true);
-           move.y = Input.GetAxis("Vertical");
+           velocity.y = Input.GetAxis("Vertical") * MaxSpeed;
         }
 
 
