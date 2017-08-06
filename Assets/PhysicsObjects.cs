@@ -19,7 +19,8 @@ public class PhysicsObjects : MonoBehaviour {
     protected List<RaycastHit2D> hitBufferList = new List<RaycastHit2D>(16);                       
                                                                                                    
     protected const float minMoveDistance = 0.001f;                                                
-    protected const float shellRadius = 0.01f;                                                     
+    protected const float shellRadius = 0.01f;
+    Animator anim;
                                                                                                    
     void OnEnable ()                                                                               
     {                                                                                              
@@ -100,7 +101,8 @@ public class PhysicsObjects : MonoBehaviour {
                 distance = modifiedDistance < distance ? modifiedDistance : distance;              
             }                                                                                      
                                                                                                    
-        }                                                                                          
+        }
+        
                                                                                                    
         rb2d.position = rb2d.position = rb2d.position + move.normalized * distance;                // Altera a posição do objeto
             
