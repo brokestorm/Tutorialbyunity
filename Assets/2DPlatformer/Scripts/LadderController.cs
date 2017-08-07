@@ -4,28 +4,32 @@ using UnityEngine;
 
 public class LadderController : MonoBehaviour
 {
+	private Player2Controller player;
 
-    private void OnTriggerEnter2D(Collider2D collision)
+	void OnEnable()
+	{
+		player = FindObjectOfType<Player2Controller> ();
+	}
+
+    void OnTriggerEnter2D(Collider2D other)
     {
-        if (collision.gameObject.name == "Player")
+		if (other.tag == "Player")
         {
-            collision.GetComponent<Player2Controller>().IsOnLadder = true;
+			player.isOnLadder = true;
         }
     }
-
-    private void OnTriggerStay2D(Collider2D collision)
-    {
-        if (collision.gameObject.name == "Player")
-        {
-            collision.GetComponent<Player2Controller>().IsOnLadder = true;
-        }
-    }
-
-    private void OnTriggerExit2D(Collider2D collision)
-    {
-        if (collision.gameObject.name == "Player")
-        {
-            collision.GetComponent<Player2Controller>().IsOnLadder = false;
-        }
-    }
+	void OnTriggerStay2D(Collider2D other)
+	{
+		if (other.tag == "Player")
+		{
+			player.isOnLadder = true;
+		}
+	}
+	void OnTriggerExit2D(Collider2D other)
+	{
+		if (other.tag == "Player") 
+		{
+			player.isOnLadder = false;
+		}
+	}
 }

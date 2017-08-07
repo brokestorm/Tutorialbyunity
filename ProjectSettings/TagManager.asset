@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 2
   tags:
   - Enemy
+  - Pickup
+  - Ladder
   layers:
   - Default
   - TransparentFX
@@ -15,12 +17,12 @@ TagManager:
   - 
   - 
   - Level
-  - Enemy
-  - Usable
   - Pickup
+  - Usable
+  - 
   - IgnorePlayer
   - Player
-  - 
+  - Enemy
   - 
   - 
   - 

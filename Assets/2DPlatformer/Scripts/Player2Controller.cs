@@ -1,53 +1,51 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Player2Controller : MonoBehaviour
 {   
     // Player Parameters
     [SerializeField] private float maxSpeed = 5;
     [SerializeField] private float jumpTakeOffSpeed = 12;
-
+	[SerializeField] private float climbSpeed = 2;
     //Components
-    protected Rigidbody2D rb2d;
+    protected Rigidbody2D myRigidbody2D;
     protected SpriteRenderer spriteRenderer;
     protected Animator anim;
     
     // GroundCheck Parameters
     protected bool grounded = false;
     [SerializeField] private Transform groundCheck;
-    float groundRadius = 0.2f;
+    float groundRadius = 0.1f;
     [SerializeField] private LayerMask whatIsGround;
+
+	// Movement
     private Vector2 move = Vector2.zero;
     private Vector2 velocity = Vector2.zero;
-    private float Vo = 0;
-    // for the Ladder
-    public bool IsOnLadder = false;
-    private bool gravityON = true;
-    private float gravityModifier;
-    public void SetNoGravity()
-    {
-        gravityON = false;
-        rb2d.gravityScale = 0f;
-    }
-    public void ResetGravity()
-    {
-        gravityON = true;
-        rb2d.gravityScale = gravityModifier;
-    }
+	public bool isOnLadder = false;
+	private float gravity;
+	private float climbVelocity;
 
+	// For the text
+	private int count;
+	public Text countText;  //Store a reference to the UI Text component which will display the number of pickups collected.
+
+	// This function will enable all components in the start
     void OnEnable()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
         anim = GetComponent<Animator>();
-        rb2d = GetComponent<Rigidbody2D>();
-        gravityModifier = rb2d.gravityScale;                                                        // Keeps the value of gravity which the operator set at the start;
+        myRigidbody2D = GetComponent<Rigidbody2D>();
+		count = 0;
+		SetCountText ();
+		gravity = myRigidbody2D.gravityScale;
     }
 
     void FixedUpdate()
     {
         // Updating Grounded
-        grounded = Physics2D.OverlapCircle(groundCheck.position, groundRadius, whatIsGround);       // Generates parameters to bet attached to an GameObject who will check if there is any collision;
+        grounded = Physics2D.OverlapCircle(groundCheck.position, groundRadius, whatIsGround);      // Generates parameters to bet attached to an GameObject who will check if there is any collision;
         anim.SetBool("grounded", grounded);
 
         // x axis
@@ -68,28 +66,23 @@ public class Player2Controller : MonoBehaviour
             }
         }
 
+		if(isOnLadder)
+		{	anim.SetBool ("OnLadder", true);
+			myRigidbody2D.gravityScale = 0;
+			climbVelocity = Input.GetAxis("Vertical") * climbSpeed;
+			myRigidbody2D.velocity = new Vector2 (velocity.x, climbVelocity);
+			anim.SetFloat ("climbing", Mathf.Abs(myRigidbody2D.velocity.y) / climbSpeed);
+		}
+		else if(!isOnLadder)
+		{	anim.SetBool ("OnLadder", false);
+			myRigidbody2D.gravityScale = gravity;
+			myRigidbody2D.velocity = new Vector2(velocity.x, myRigidbody2D.velocity.y + velocity.y); 
 
+		}
+			
 
-
-        if (IsOnLadder && Input.GetButton("Use"))
-        {
-            anim.SetBool("OnLadder", true);
-            SetNoGravity();
-            move.y = Input.GetAxis("Vertical");
-            velocity.y = move.y * maxSpeed;
-            Vo = rb2d.velocity.y;
-        }
-        else if (Input.GetButton("Use") || IsOnLadder == false || Input.GetButton("Jump"))
-        {
-            anim.SetBool("OnLadder", false);
-            ResetGravity();
-            Vo = 0;
-        }
-        if (gravityON)
-        {
-            rb2d.velocity = new Vector2(velocity.x, rb2d.velocity.y - Vo + velocity.y);                                        // Velocity of player in (X, Y) axis
-        }
-        anim.SetFloat("Run", Mathf.Abs(rb2d.velocity.x) / maxSpeed);
+          // Velocity of player in (X, Y) axis
+        anim.SetFloat("Run", Mathf.Abs(myRigidbody2D.velocity.x) / maxSpeed);
 
 
         // Flipping Sprites
@@ -99,6 +92,25 @@ public class Player2Controller : MonoBehaviour
             spriteRenderer.flipX = !spriteRenderer.flipX;
         }
 
-        velocity = Vector2.zero;                                                                                      // After All changes, we need to reinicialize velocity.
+        velocity = Vector2.zero;     // After All changes, we need to reinicialize velocity.
     }
+
+	// This function will set to inactive the pickups which touches the enemy.
+	void OnTriggerEnter2D (Collider2D other)
+	{
+		if(other.gameObject.CompareTag("Pickup"))
+		{		
+			other.gameObject.SetActive(false);
+			count += 100;
+			SetCountText ();
+		}
+	}
+
+	//This function updates the text displaying the number of objects
+	void SetCountText()
+	{
+		//Set the text property of our our countText object to "Count: " followed by the number stored in our count variable.
+		countText.text = "Points: " + count.ToString ();
+
+	}
 }
